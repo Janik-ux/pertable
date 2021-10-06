@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Periodic Table Writer</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+
+<body>
+    <div>
+        <h1>Periodic Table Writer</h1>
+        <div class="dropdownmenu" style="display: none;">
+            <div class="menucontainer" onclick="dropdownfunc(this)">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </div>
+            <div id="thedropdown" class="dropdown-content">
+                <a href="home.html">Home</a>
+                <a href="tictactoemehrspiel.html">Tic Tac Toe Mehrspieler</a>
+                <a href="tictactoe.html">Tic Tac Toe</a>
+            </div>
+        </div>
+        <div class="centerdiv" id="inputfield">
+            <input id="input" onkeyup="makeelem()" type="text" placeholder="Your text?" />
+        </div>
+        <div id="forfail" class="centerdiv"></div>
+        <div id="peritable" class="centerdiv"></div>
+    </div>
+    <div class="copyright">&copy; 2020 mianikproductions. All rights reserved.</div>
+</body>
+
+</html>
