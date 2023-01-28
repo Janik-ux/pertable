@@ -1,4 +1,4 @@
-var debug = false; // print debug info
+var debug = true; // print debug info
 var oldtxt = "";
 var specialsigns = [" "]; //später vielleichtmal mit mehr Zeichen(@,!§$?()usw.)
 const specialchar = {
@@ -143,11 +143,6 @@ $.get("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master
     }
 });
 
-function popupfunc(id) {
-    var popup = document.getElementById("in" + id);
-    popup.classList.toggle("show");
-}
-
 function replace_spec_char(text, swapchars) {
     // replaces chars specififed in swapchars in text string.
     // arg text string
@@ -239,15 +234,14 @@ function display_elems(elems) {
     for (var i = 0; i < elems.length; i++) {
         // display the element
         var div = document.createElement("div");
-        div.setAttribute("class", "popup");
-        div.setAttribute("onclick", "popupfunc(this.id)");
+        div.setAttribute("class", "elements");
         div.setAttribute("id", "elem" + i);
         div.style.background = `url(${pertable_img_url}) ${elements[elems[i]][0]} ${elements[elems[i]][1]}`;
         div.style.backgroundSize = "2000px"
 
         // creating popup with more infos
         var span = document.createElement("span");
-        span.setAttribute("class", "popuptext");
+        span.setAttribute("class", "tooltiptext");
         span.setAttribute("id", "inelem" + i);
 
         if (specialsigns.includes(elems[i])) {
@@ -283,8 +277,10 @@ function makeelem() {
         forfail.innerHTML = "Generating failed... <br /> Try to write further maybe there will be a match! This is what left:";
         var longest = []
         for (const combi of combinations.invalid) {
-            longest = combi ? combi.length > longest : longest;
+            console.log(combi)
+            longest = (combi.length > longest.length) ? combi : longest;
         }
+        // console.log(longest)
         var writingout = longest;
     } else {
         forfail = document.getElementById("forfail");

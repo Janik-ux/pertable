@@ -29,81 +29,53 @@ h1 {
     cursor: pointer;
 }
 
-
-/* Popup container */
-
-.popup {
+.elements {
     position: relative;
     display: inline-block;
-    cursor: pointer;
     width: 104px;
     height: 104px;
 }
 
-
-/* The actual popup (appears on top) */
-
-.popup .popuptext {
+.elements .tooltiptext {
     visibility: hidden;
-    width: 160px;
-    background-color: #dbdbdb;
-    color: #000;
+    width: 300%;
+    background-color: #555;
+    color: #fff;
     text-align: center;
+    padding: 5px;
     border-radius: 6px;
-    padding: 8px 0;
+  
+    /* Position the tooltip text */
     position: absolute;
     z-index: 1;
-    bottom: 100%;
+    top: 105%;
     left: 50%;
-    margin-left: -80px;
-}
+    margin-left: -150%;
+  
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
 
-
-/* Popup arrow */
-
-.popup .popuptext::after {
+/* Tooltip arrow */
+.elements .tooltiptext::after {
     content: "";
     position: absolute;
-    top: 100%;
+    bottom: 100%;
     left: 50%;
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #e8d6e8 transparent transparent transparent;
-}
-
-
-/* Toggle this class when clicking on the popup container (hide and show the popup) */
-
-.popup .show {
+    border-color: transparent transparent #555 transparent;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .elements:hover .tooltiptext {
     visibility: visible;
-    -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s
-}
-
-
-/* Add animation (fade in the popup) */
-
-@-webkit-keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
+    opacity: 1;
+  }
 
 #img0 {
-    /* background: url(https://scientificgems.files.wordpress.com/2016/06/periodic_table_complete.png) 56 78; */
     background: url(https://upload.wikimedia.org/wikipedia/commons/c/c0/Periodic_Table_Of_Elements.svg) 56 78;
 }
 
