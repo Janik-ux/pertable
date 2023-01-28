@@ -143,6 +143,14 @@ $.get("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master
     }
 });
 
+Array.prototype.indexOfArray = function (val) {
+    var hash = {};
+    for (var i = 0; i < this.length; i++) {
+      hash[this[i]] = i;
+    }
+    return (hash.hasOwnProperty(val)) ? hash[val] : -1;
+}
+
 function replace_spec_char(text, swapchars) {
     // replaces chars specififed in swapchars in text string.
     // arg text string
@@ -226,38 +234,70 @@ function removeAllChildNodes(parent) {
     }
 }
 
-function display_elems(elems) {
+function display_elems(combis) {
     // display the elements from elems array
 
     removeAllChildNodes(document.getElementById("peritable"));
 
-    for (var i = 0; i < elems.length; i++) {
-        // display the element
-        var div = document.createElement("div");
-        div.setAttribute("class", "elements");
-        div.setAttribute("id", "elem" + i);
-        div.style.background = `url(${pertable_img_url}) ${elements[elems[i]][0]} ${elements[elems[i]][1]}`;
-        div.style.backgroundSize = "2000px"
+    var firstrow = true;
+    for (const elems of combis) {
+        // insert spacer before content if we are not in the first row
+        if (!firstrow) {
+            var or = document.createElement("div");
+            or.setAttribute("class", "centerdiv elemrowspacer");
+            or.innerHTML = "OR";
+            document.getElementById("peritable").appendChild(or);
+        } else {firstrow = false;}
 
-        // creating popup with more infos
-        var span = document.createElement("span");
-        span.setAttribute("class", "tooltiptext");
-        span.setAttribute("id", "inelem" + i);
+        var row = document.createElement("div");
+        row.setAttribute("class", "centerdiv elemrow");
+        for (var i = 0; i < elems.length; i++) {
+            // display the element
+            var div = document.createElement("div");
+            div.setAttribute("class", "elements");
+            div.setAttribute("id", "elem" + i);
+            div.style.background = `url(${pertable_img_url}) ${elements[elems[i]][0]} ${elements[elems[i]][1]}`;
+            div.style.backgroundSize = "2000px"
 
-        if (specialsigns.includes(elems[i])) {
-            span.innerHTML = "A simple whitespace, nothing severe!";
-        } else {
-            var text = pertable[persymboldic[elems[i]]]["summary"]
-            if (text == null) {
-                text = "Unfortunately no data present :(";
+            // creating popup with more infos
+            var span = document.createElement("span");
+            span.setAttribute("class", "tooltiptext");
+            span.setAttribute("id", "inelem" + i);
+
+            if (specialsigns.includes(elems[i])) {
+                span.innerHTML = "A simple whitespace, nothing severe!";
+            } else {
+                var text = pertable[persymboldic[elems[i]]]["summary"]
+                if (text == null) {
+                    text = "Unfortunately no data present :(";
+                }
+                span.innerHTML = text;
             }
-            span.innerHTML = text;
+
+            // add all to tree
+            div.appendChild(span);
+            row.appendChild(div);
+            document.getElementById("peritable").appendChild(row);
         }
 
-        // add all to tree
-        div.appendChild(span);
-        document.getElementById("peritable").appendChild(div);
     }
+}
+
+function rm_swaps(array) {
+    // removes one array if it exists forward and backwards
+    // attention: doesnt remove doubles
+    // but in my application there cant be any doubles
+    console.log(array)
+    var out = [];
+    for (let i = 0; i < array.length; i++) {
+        var rev_ind = out.indexOfArray(array[i].slice().reverse())
+        console.log(out)
+        console.log(rev_ind)
+        if (rev_ind === -1) {
+            out.push(array[i]);
+        }
+    }
+    return out;
 }
 
 function makeelem() {
@@ -275,18 +315,23 @@ function makeelem() {
     if (combinations.valid.length == 0 && writingin.length != 0) {
         forfail = document.getElementById("forfail");
         forfail.innerHTML = "Generating failed... <br /> Try to write further maybe there will be a match! This is what left:";
-        var longest = []
+        var writingout = [[]]
         for (const combi of combinations.invalid) {
-            console.log(combi)
-            longest = (combi.length > longest.length) ? combi : longest;
+            if (combi.join("").length > writingout[0].join("").length) {
+                writingout = [combi];
+            }
+            else if (combi.join("").length == writingout[0].join("").length) {
+                writingout.push(combi);
+            }
         }
-        // console.log(longest)
-        var writingout = longest;
+
     } else {
         forfail = document.getElementById("forfail");
         forfail.innerHTML = "";
-        var writingout = combinations.valid[0];
+        var writingout = combinations.valid;
     }
+
+    writingout = rm_swaps(writingout);
 
     display_elems(writingout)
     
