@@ -1,13 +1,14 @@
+var debug = false; // print debug info
 var oldtxt = "";
-var popups = 0;
+var dispd_elems = 0; // Count of already existing (displayed) elem divs to change them
 var specialsigns = [" "]; //später vielleichtmal mit mehr Zeichen(@,!§$?()usw.)
-var specialchar = {
+const specialchar = {
     "ü": "ue",
     "ö": "oe",
     "ä": "ae",
     "ß": "ss"
 };
-var picdic = {
+const elements = {
     " ": ["5S000px", "1000px"],
     "h": ["-52px", "-74px"],
     "he": ["127px", "-72px"],
@@ -129,9 +130,7 @@ var picdic = {
     "lr": ["230px", "-950px"]
 }
 
-// var pertable_img_url = "https://scientificgems.files.wordpress.com/2016/06/periodic_table_complete.png"
-// var pertable_img_url = "https://upload.wikimedia.org/wikipedia/commons/c/c0/Periodic_Table_Of_Elements.svg"
-var pertable_img_url = "https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_table_large.svg"
+const pertable_img_url = "https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_table_large.svg"
 
 var pertable;
 var persymbols = new Array;
@@ -153,92 +152,156 @@ function popupfunc(id) {
     popup.classList.toggle("show");
 }
 
+function replace_spec_char(text, swapchars) {
+    // replaces chars specififed in swapchars in text string.
+    // arg text string
+    // arg swapchars dict: key=char, value=new char
+    // return string
+    
+    var out = "";
+
+    for (letter of text) {
+        if (letter in swapchars) {
+            out += swapchars[letter];
+        } else {
+            out += letter;
+        }
+    }
+
+    return out
+}
+
+function generate_combis(text) {
+    // looks for matching combinations of elements with the text
+    // arg str text
+
+    // for every char find elements that contain the char
+    var possible_elems = new Array(text.length);
+    for (let index = 0; index < text.length; index++) {
+        // check if char(s) in elements and add to arr
+        possible_elems[index] = new Array;
+
+        var char = text.charAt(index);
+
+        // char only
+        if (elements[char]) {
+            possible_elems[index].push(char);
+        }
+        // char with right neighbour
+        if (elements[char + text.charAt(index+1)] && index+1 < text.length) {
+            possible_elems[index].push(char + text.charAt(index+1));
+        }
+    }
+
+    if (debug) {
+        console.log("possible_elems: ");
+        console.log(possible_elems);
+    }
+
+    // recursively search for combis
+    var result = {"valid": [], "invalid": []};
+
+    function recurse(at_i, chr_array) {
+        // we got through the array
+        if (at_i >= possible_elems.length) {
+            result["valid"].push(chr_array);
+        }
+        // there arent anymore option to go further
+        else if (possible_elems[at_i].length == 0) {
+            result["invalid"].push(chr_array);
+        }
+        // got to next layer
+        else {
+            for (const elem of possible_elems[at_i]) {
+                recurse(at_i+elem.length, chr_array.concat(elem));
+            }
+        }
+    }
+
+    recurse(0, []);
+
+    if (debug) {
+        console.log("result: ");
+        console.log(result);
+    }
+
+    return result;
+    
+}
+
 function makeelem() {
-    var failed = 0;
-    var testy;
-    var writingout = new Array;
+    // find combination of letters who can be displayed
+    // as Elements of the Periodic Table and display them.
+    
+    // get input string
     var writingin = document.getElementById("input").value.toLowerCase();
-    var temporalstr = "";
-    for (letter of writingin) {
-        if (letter in specialchar) {
-            temporalstr += specialchar[letter];
-        } else {
-            temporalstr += letter;
+
+    // replace ä, ö etc, specified in specialchar
+    writingin = replace_spec_char(writingin, specialchar);
+
+    var combinations = generate_combis(writingin);
+
+    if (combinations.valid.length == 0 && writingin.length != 0) {
+        forfail = document.getElementById("forfail");
+        forfail.innerHTML = "Generating failed... <br /> Try to write further maybe there will be a match! This is what left:";
+        var longest = []
+        for (const combi of combinations.invalid) {
+            longest = combi ? combi.length > longest : longest;
         }
+        var writingout = longest;
+    } else {
+        forfail = document.getElementById("forfail");
+        forfail.innerHTML = "";
+        // var writingout = combinations.valid[combinations.valid.length-1]; // less elements on screen
+        var writingout = combinations.valid[0]; // more elements on screen
     }
-    writingin = temporalstr;
-    var ind = 0;
-    var skip = 0;
-    var recu = 0;
-    for (letter of writingin) {
-        if (skip == 1) {
-            skip = 0;
-            ind += 1;
-            continue;
-        } else if (specialsigns.includes(letter) || persymbols.includes(letter)) {
-            writingout.push(letter);
-            recu = 0;
-        } else if (persymbols.includes(letter + writingin[ind + 1])) {
-            writingout.push(letter + writingin[ind + 1]);
-            skip = 1;
-            recu = 1;
-        } else if (persymbols.includes(writingin[ind - 1] + letter) && ind != 0 && recu == 0) {
-            writingout[writingout.length - 1] = writingin[ind - 1] + letter;
-            recu = 1;
-        } else {
-            var failed = 1;
-            fail = document.getElementById("forfail")
-            fail.innerHTML = "Generating failed... <br /> Try to write further maybe there will be a match! This is what left:";
-            fail.style.margin = "15px";
-            break;
-        }
-        ind += 1;
-    }
-    if (failed != 1) {
-        fail = document.getElementById("forfail");
-        fail.innerHTML = null;
-        fail.style.margin = "15px";
-    }
+
+    // display the elements from writingout array
     for (var i = 0; i < writingout.length; i++) {
-        if (i >= popups) {
+        // If there is no div present at this position create one
+        if (i >= dispd_elems) {
             var div = document.createElement("div");
             div.setAttribute("class", "popup");
             div.setAttribute("onclick", "popupfunc(this.id)");
-            div.setAttribute("id", "elem" + popups);
-            div.style.background = `url(${pertable_img_url}) ${picdic[writingout[i]][0]} ${picdic[writingout[i]][1]}`;
-            div.style.backgroundSize = "2000px" //1000px"
+            div.setAttribute("id", "elem" + dispd_elems);
+            div.style.background = `url(${pertable_img_url}) ${elements[writingout[i]][0]} ${elements[writingout[i]][1]}`;
+            div.style.backgroundSize = "2000px"
             var span = document.createElement("span");
             span.setAttribute("class", "popuptext");
-            span.setAttribute("id", "inelem" + popups);
+            span.setAttribute("id", "inelem" + dispd_elems);
             if (specialsigns.includes(writingout[i])) {
                 span.innerHTML = "A simple whitespace, nothing severe!";
             } else {
                 var text = pertable[persymboldic[writingout[i]]]["appearance"]
                 if (text == null) {
-                    text = "Without appearance"
+                    text = "Without appearance";
                 }
-                span.innerHTML = text + "<br />" + "boils at: " + pertable[persymboldic[writingout[i]]]["boil"];
+                span.innerHTML = text + "</br>" + "boils at: " + pertable[persymboldic[writingout[i]]]["boil"];
             }
             div.appendChild(span);
             document.getElementById("peritable").appendChild(div);
-            popups += 1;
-        } else {
-            document.getElementById("elem" + i).style.backgroundPosition = picdic[writingout[i]][0] + " " + picdic[writingout[i]][1];
+            dispd_elems += 1;
+        } 
+        // reuse div on that position
+        else {
+            document.getElementById("elem" + i).style.backgroundPosition = elements[writingout[i]][0] + " " + elements[writingout[i]][1];
             if (specialsigns.includes(writingout[i])) {
-                document.getElementById("inelem" + i).innerHTML = "A simple whitespace, nothing severe"
+                document.getElementById("inelem" + i).innerHTML = "A simple whitespace, nothing severe";
             } else {
-                var text = pertable[persymboldic[writingout[i]]]["appearance"]
+                var text = pertable[persymboldic[writingout[i]]]["appearance"];
                 if (text == null) {
-                    text = "Without appearance"
+                    text = "Without appearance";
                 }
                 document.getElementById("inelem" + i).innerHTML = text + "\n" + "boils at: " + pertable[persymboldic[writingout[i]]]["boil"];
             }
         }
     }
-    var delpopups = popups;
-    for (var i = writingout.length; i < delpopups; i++) {
+
+    // remove all divs at positions greater then len of elements to display
+    var deldispd_elems = dispd_elems;
+    for (var i = writingout.length; i < deldispd_elems; i++) {
         document.getElementById("elem" + i).remove();
-        popups -= 1;
+        dispd_elems -= 1;
 
     }
 }

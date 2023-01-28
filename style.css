@@ -38,7 +38,6 @@ h1 {
     cursor: pointer;
     width: 104px;
     height: 104px;
-    background-color: pink;
 }
 
 
@@ -108,6 +107,10 @@ h1 {
     background: url(https://upload.wikimedia.org/wikipedia/commons/c/c0/Periodic_Table_Of_Elements.svg) 56 78;
 }
 
+#forfail {
+    margin: 15px;
+}
+
 .centerdiv {
     display: flex;
     justify-content: center;
@@ -133,4 +136,5 @@ p.copyright {
     width: 100%;
     text-align: center;
     margin: auto;
+    font-size: small;
 }
