@@ -1,6 +1,5 @@
 var debug = false; // print debug info
 var oldtxt = "";
-var dispd_elems = 0; // Count of already existing (displayed) elem divs to change them
 var specialsigns = [" "]; //später vielleichtmal mit mehr Zeichen(@,!§$?()usw.)
 const specialchar = {
     "ü": "ue",
@@ -133,19 +132,16 @@ const elements = {
 const pertable_img_url = "https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_table_large.svg"
 
 var pertable;
-var persymbols = new Array;
-var persymboldic = {};
+var persymboldic = {}; // dict to translate between full name and symbol
 $.get("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/periodic-table-lookup.json", function(data) {
     pertable = JSON.parse(data);
 }).done(function() {
     for (elem in pertable) {
         if (elem != "order") {
-            persymbols.push(pertable[elem]["symbol"].toLowerCase());
             persymboldic[pertable[elem]["symbol"].toLowerCase()] = elem;
         }
     }
 });
-
 
 function popupfunc(id) {
     var popup = document.getElementById("in" + id);
@@ -229,6 +225,47 @@ function generate_combis(text) {
     
 }
 
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+
+function display_elems(elems) {
+    // display the elements from elems array
+
+    removeAllChildNodes(document.getElementById("peritable"));
+
+    for (var i = 0; i < elems.length; i++) {
+        // display the element
+        var div = document.createElement("div");
+        div.setAttribute("class", "popup");
+        div.setAttribute("onclick", "popupfunc(this.id)");
+        div.setAttribute("id", "elem" + i);
+        div.style.background = `url(${pertable_img_url}) ${elements[elems[i]][0]} ${elements[elems[i]][1]}`;
+        div.style.backgroundSize = "2000px"
+
+        // creating popup with more infos
+        var span = document.createElement("span");
+        span.setAttribute("class", "popuptext");
+        span.setAttribute("id", "inelem" + i);
+
+        if (specialsigns.includes(elems[i])) {
+            span.innerHTML = "A simple whitespace, nothing severe!";
+        } else {
+            var text = pertable[persymboldic[elems[i]]]["summary"]
+            if (text == null) {
+                text = "Unfortunately no data present :(";
+            }
+            span.innerHTML = text;
+        }
+
+        // add all to tree
+        div.appendChild(span);
+        document.getElementById("peritable").appendChild(div);
+    }
+}
+
 function makeelem() {
     // find combination of letters who can be displayed
     // as Elements of the Periodic Table and display them.
@@ -252,56 +289,9 @@ function makeelem() {
     } else {
         forfail = document.getElementById("forfail");
         forfail.innerHTML = "";
-        // var writingout = combinations.valid[combinations.valid.length-1]; // less elements on screen
-        var writingout = combinations.valid[0]; // more elements on screen
+        var writingout = combinations.valid[0];
     }
 
-    // display the elements from writingout array
-    for (var i = 0; i < writingout.length; i++) {
-        // If there is no div present at this position create one
-        if (i >= dispd_elems) {
-            var div = document.createElement("div");
-            div.setAttribute("class", "popup");
-            div.setAttribute("onclick", "popupfunc(this.id)");
-            div.setAttribute("id", "elem" + dispd_elems);
-            div.style.background = `url(${pertable_img_url}) ${elements[writingout[i]][0]} ${elements[writingout[i]][1]}`;
-            div.style.backgroundSize = "2000px"
-            var span = document.createElement("span");
-            span.setAttribute("class", "popuptext");
-            span.setAttribute("id", "inelem" + dispd_elems);
-            if (specialsigns.includes(writingout[i])) {
-                span.innerHTML = "A simple whitespace, nothing severe!";
-            } else {
-                var text = pertable[persymboldic[writingout[i]]]["appearance"]
-                if (text == null) {
-                    text = "Without appearance";
-                }
-                span.innerHTML = text + "</br>" + "boils at: " + pertable[persymboldic[writingout[i]]]["boil"];
-            }
-            div.appendChild(span);
-            document.getElementById("peritable").appendChild(div);
-            dispd_elems += 1;
-        } 
-        // reuse div on that position
-        else {
-            document.getElementById("elem" + i).style.backgroundPosition = elements[writingout[i]][0] + " " + elements[writingout[i]][1];
-            if (specialsigns.includes(writingout[i])) {
-                document.getElementById("inelem" + i).innerHTML = "A simple whitespace, nothing severe";
-            } else {
-                var text = pertable[persymboldic[writingout[i]]]["appearance"];
-                if (text == null) {
-                    text = "Without appearance";
-                }
-                document.getElementById("inelem" + i).innerHTML = text + "\n" + "boils at: " + pertable[persymboldic[writingout[i]]]["boil"];
-            }
-        }
-    }
-
-    // remove all divs at positions greater then len of elements to display
-    var deldispd_elems = dispd_elems;
-    for (var i = writingout.length; i < deldispd_elems; i++) {
-        document.getElementById("elem" + i).remove();
-        dispd_elems -= 1;
-
-    }
+    display_elems(writingout)
+    
 }
