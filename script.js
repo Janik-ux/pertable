@@ -133,15 +133,29 @@ const pertable_img_url = "https://upload.wikimedia.org/wikipedia/commons/4/4d/Pe
 
 var pertable;
 var persymboldic = {}; // dict to translate between full name and symbol
-$.get("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/periodic-table-lookup.json", function(data) {
-    pertable = JSON.parse(data);
-}).done(function() {
-    for (elem in pertable) {
-        if (elem != "order") {
-            persymboldic[pertable[elem]["symbol"].toLowerCase()] = elem;
+
+// init function
+$( document ).ready(function() {
+    // Text from url from sharing for example
+    const urlParams = new URLSearchParams(window.location.search);
+    var text = urlParams.has("s") ? urlParams.get("s") : "";
+    $('#input').val(text);
+
+    // get elements data
+    $.get("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/periodic-table-lookup.json", function(data) {
+        pertable = JSON.parse(data);
+    }).done(function() {
+        for (elem in pertable) {
+            if (elem != "order") {
+                persymboldic[pertable[elem]["symbol"].toLowerCase()] = elem;
+            }
         }
-    }
+
+        // compute and display elements
+        makeelem();
+    });
 });
+
 
 Array.prototype.indexOfArray = function (val) {
     var hash = {};
@@ -285,14 +299,10 @@ function display_elems(combis) {
 
 function rm_swaps(array) {
     // removes one array if it exists forward and backwards
-    // attention: doesnt remove doubles
-    // but in my application there cant be any doubles
-    console.log(array)
+
     var out = [];
     for (let i = 0; i < array.length; i++) {
         var rev_ind = out.indexOfArray(array[i].slice().reverse())
-        console.log(out)
-        console.log(rev_ind)
         if (rev_ind === -1) {
             out.push(array[i]);
         }
