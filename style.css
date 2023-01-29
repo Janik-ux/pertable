@@ -109,6 +109,11 @@ footer {
     width: 100%;
 }
 
+#contentwrap {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
 p.copyright {
     width: 100%;
     text-align: center;
