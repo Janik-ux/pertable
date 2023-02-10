@@ -1,150 +1,45 @@
-var debug = true; // print debug info
+var debug = false; // print debug info
 var oldtxt = "";
-var specialsigns = [" "]; //später vielleichtmal mit mehr Zeichen(@,!§$?()usw.)
+const specialsigns = [" "]; //später vielleichtmal mit mehr Zeichen(@,!§$?()usw.)
 const specialchar = {
     "ü": "ue",
     "ö": "oe",
     "ä": "ae",
     "ß": "ss"
 };
-const elements = {
-    " ": ["5S000px", "1000px"],
-    "h": ["-52px", "-74px"],
-    "he": ["127px", "-72px"],
-    "li": ["-52px", "-177px"],
-    "be": ["-155px", "-177px"],
-    "b": ["642px", "-175px"],
-    "c": ["539px", "-175px"],
-    "n": ["436px", "-175px"],
-    "o": ["333px", "-175px"],
-    "f": ["230px", "-175px"],
-    "ne": ["127px", "-175px"],
-    "na": ["-52px", "-280px"],
-    "mg": ["-155px", "-280px"],
-    "al": ["642px", "-278px"],
-    "si": ["539px", "-278px"],
-    "p": ["436px", "-278px"],
-    "s": ["333px", "-278px"],
-    "cl": ["230px", "-278px"],
-    "ar": ["127px", "-278px"],
-    "k": ["-52px", "-383px"],
-    "ca": ["-155px", "-383px"],
-    "sc": ["-258px", "-383px"],
-    "ti": ["-430px", "-381px"],
-    "v": ["1466px", "-381px"],
-    "cr": ["1363px", "-381px"],
-    "mn": ["1260px", "-381px"],
-    "fe": ["1157px", "-381px"],
-    "co": ["1054px", "-381px"],
-    "ni": ["951px", "-381px"],
-    "cu": ["848px", "-381px"],
-    "zn": ["745px", "-381px"],
-    "ga": ["642px", "-381px"],
-    "ge": ["539px", "-381px"],
-    "as": ["436px", "-381px"],
-    "se": ["333px", "-381px"],
-    "br": ["230px", "-381px"],
-    "kr": ["127px", "-381px"],
-    "rb": ["-52px", "-486px"],
-    "sr": ["-155px", "-486px"],
-    "y": ["-258px", "-486px"],
-    "zr": ["-430px", "-485px"],
-    "nb": ["1466px", "-485px"],
-    "mo": ["1363px", "-485px"],
-    "tc": ["1260px", "-485px"],
-    "ru": ["1157px", "-484px"],
-    "rh": ["1054px", "-484px"],
-    "pd": ["951px", "-484px"],
-    "ag": ["848px", "-484px"],
-    "cd": ["745px", "-484px"],
-    "in": ["642px", "-484px"],
-    "sn": ["539px", "-484px"],
-    "sb": ["436px", "-484px"],
-    "te": ["333px", "-484px"],
-    "i": ["230px", "-484px"],
-    "xe": ["127px", "-484px"],
-    "cs": ["-53px", "-589px"],
-    "ba": ["-155px", "-589px"],
-    "hf": ["-430px", "-587px"],
-    "ta": ["1466px", "-587px"],
-    "w": ["1363px", "-587px"],
-    "re": ["1260px", "-587px"],
-    "os": ["1157px", "-587px"],
-    "ir": ["1054px", "-587px"],
-    "pt": ["951px", "-587px"],
-    "au": ["848px", "-587px"],
-    "hg": ["745px", "-587px"],
-    "tl": ["642px", "-587px"],
-    "pb": ["539px", "-587px"],
-    "bi": ["436px", "-587px"],
-    "po": ["333px", "-587px"],
-    "at": ["230px", "-587px"],
-    "rn": ["127px", "-587px"],
-    "fr": ["-53px", "-693px"],
-    "ra": ["-155px", "-693px"],
-    "rf": ["-430px", "-690px"],
-    "db": ["1466px", "-690px"],
-    "sg": ["1363px", "-690px"],
-    "bh": ["1260px", "-690px"],
-    "hs": ["1157px", "-690px"],
-    "mt": ["1054px", "-690px"],
-    "ds": ["951px", "-690px"],
-    "rg": ["848px", "-690px"],
-    "cn": ["745px", "-690px"],
-    "nh": ["642px", "-690px"],
-    "fl": ["539px", "-690px"],
-    "mc": ["436px", "-690px"],
-    "lv": ["333px", "-690px"],
-    "ts": ["230px", "-690px"],
-    "og": ["127px", "-690px"],
-    "la": ["-258px", "-589px"],
-    "ce": ["-430px", "-847px"],
-    "pr": ["1466px", "-847px"],
-    "nd": ["1363px", "-847px"],
-    "pm": ["1260px", "-847px"],
-    "sm": ["1157px", "-847px"],
-    "eu": ["1054px", "-847px"],
-    "gd": ["951px", "-847px"],
-    "tb": ["848px", "-847px"],
-    "dy": ["745px", "-847px"],
-    "ho": ["642px", "-847px"],
-    "er": ["539px", "-847px"],
-    "tm": ["436px", "-847px"],
-    "yb": ["333px", "-847px"],
-    "lu": ["230px", "-847px"],
-    "ac": ["-258px", "-693px"],
-    "th": ["-430px", "-950px"],
-    "pa": ["1466px", "-950px"],
-    "u": ["1363px", "-950px"],
-    "np": ["1260px", "-950px"],
-    "pu": ["1157px", "-950px"],
-    "am": ["1054px", "-950px"],
-    "cm": ["951px", "-950px"],
-    "bk": ["848px", "-950px"],
-    "cf": ["745px", "-950px"],
-    "es": ["642px", "-950px"],
-    "fm": ["539px", "-950px"],
-    "md": ["436px", "-950px"],
-    "no": ["333px", "-950px"],
-    "lr": ["230px", "-950px"]
-}
+var elemsize = 104
+const picnormsize = 19.231
 
-const pertable_img_url = "https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_table_large.svg"
+const pertable_img_url = "https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_table_large.svg";
+const pertable_url = "https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/periodic-table-lookup.json";
+const coord_url = "./slicevals.json";
 
+var elements;
 var pertable;
 var persymboldic = {}; // dict to translate between full name and symbol
 
-// init function
+// fetch data and run first computation
 $( document ).ready(function() {
-    // Text from url from sharing for example
+    // get elements data
+    var pertablefetch = $.get(pertable_url, function(data) {
+        pertable = JSON.parse(data);
+    });
+
+    // get elements and their coords on image
+    var elementsfetch = $.get(coord_url, function(data) {;
+        elements = data;
+    });
+
+    // get text from url from sharing for example
     const urlParams = new URLSearchParams(window.location.search);
     var text = urlParams.has("s") ? urlParams.get("s") : "";
-    $('#input').val(text);
+    $('#main-input').val(text);
 
-    // get elements data
-    $.get("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/periodic-table-lookup.json", function(data) {
-        pertable = JSON.parse(data);
-    }).done(function() {
+    // set up bootstrap's tooltip func
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $.when(elementsfetch, pertablefetch).done(function name(params) {
+        // set up persymboldic to translate between full name and symbol
         for (elem in pertable) {
             if (elem != "order") {
                 persymboldic[pertable[elem]["symbol"].toLowerCase()] = elem;
@@ -156,6 +51,9 @@ $( document ).ready(function() {
     });
 });
 
+$(window).resize(function() {
+    makeelem();
+});
 
 Array.prototype.indexOfArray = function (val) {
     var hash = {};
@@ -182,6 +80,12 @@ function replace_spec_char(text, swapchars) {
     }
 
     return out
+}
+
+function longestlength(arr) {
+    // return longest subarray of array
+    const lengths = arr.map(a=>a.length);
+    return Math.max(...lengths);
 }
 
 function generate_combis(text) {
@@ -253,43 +157,52 @@ function display_elems(combis) {
 
     removeAllChildNodes(document.getElementById("peritable"));
 
+    // set reasonable size for elems depending on screen size
+    // subtracting hardcoded value from widthis not the best way
+    // but works for now 
+    elemsize = ($("#main").width()-25)/longestlength(combis);
+    elemsize = elemsize < 150 ? elemsize : 150;
+
     var firstrow = true;
     for (const elems of combis) {
         // insert spacer before content if we are not in the first row
         if (!firstrow) {
             var or = document.createElement("div");
-            or.setAttribute("class", "centerdiv elemrowspacer");
-            or.innerHTML = "OR";
+            or.setAttribute("class", "justify-content-center");
+            or.innerHTML = "<p class=\"my-3\">OR</p>";
             document.getElementById("peritable").appendChild(or);
         } else {firstrow = false;}
 
         var row = document.createElement("div");
-        row.setAttribute("class", "centerdiv elemrow");
+        row.setAttribute("class", "row justify-content-center");
+
         for (var i = 0; i < elems.length; i++) {
-            // display the element
+            // prepare data for new elems
+            // set up symbol
+            var elemstyle = `background: url(${pertable_img_url}) ${elements[elems[i]][0]*elemsize}px ${elements[elems[i]][1]*elemsize}px;
+                             background-size: ${picnormsize*elemsize}px;
+                             width: ${elemsize}px;
+                             height: ${elemsize}px;`;
+            
+            // set up its tooltip text
+            var infotext = "";
+            if (specialsigns.includes(elems[i])) {
+                infotext = "A simple whitespace, nothing severe!";
+            } else {
+                infotext = pertable[persymboldic[elems[i]]]["summary"]
+                if (infotext == null) {
+                    infotext = "Unfortunately no data present :(";
+                }
+            }
+                           
+            // add all necessary attributes to the element
             var div = document.createElement("div");
             div.setAttribute("class", "elements");
             div.setAttribute("id", "elem" + i);
-            div.style.background = `url(${pertable_img_url}) ${elements[elems[i]][0]} ${elements[elems[i]][1]}`;
-            div.style.backgroundSize = "2000px"
+            div.setAttribute("style", elemstyle);
+            div.setAttribute("data-toggle", "tooltip");
+            div.setAttribute("title", infotext)
 
-            // creating popup with more infos
-            var span = document.createElement("span");
-            span.setAttribute("class", "tooltiptext");
-            span.setAttribute("id", "inelem" + i);
-
-            if (specialsigns.includes(elems[i])) {
-                span.innerHTML = "A simple whitespace, nothing severe!";
-            } else {
-                var text = pertable[persymboldic[elems[i]]]["summary"]
-                if (text == null) {
-                    text = "Unfortunately no data present :(";
-                }
-                span.innerHTML = text;
-            }
-
-            // add all to tree
-            div.appendChild(span);
             row.appendChild(div);
             document.getElementById("peritable").appendChild(row);
         }
@@ -315,7 +228,7 @@ function makeelem() {
     // as Elements of the Periodic Table and display them.
     
     // get input string
-    var writingin = document.getElementById("input").value.toLowerCase();
+    var writingin = document.getElementById("main-input").value.toLowerCase();
 
     // replace ä, ö etc, specified in specialchar
     writingin = replace_spec_char(writingin, specialchar);
