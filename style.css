@@ -1,117 +1,47 @@
-html * {
-    line-height: calc(1ex / 0.32);
-    font-family: Nunito, sans-serif;
+html {
+  position: relative;
+  min-height: 100%;
 }
-
 body {
-    margin: 0;
-    height: 100%;
-    background-color: #eaeaea;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  /* Margin bottom by footer height */
+  margin-bottom: 80px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height:80px;
+  /* line-height: 60px; Vertically center the text there */
+  /* background-color: #f5f5f5; */
 }
 
-h1 {
-    text-align: center;
-    background-color: #03b785f2;
-    margin-bottom: 20px;
-    margin-top: 0;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 80vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
 }
 
-.show {
-    display: block;
+
+body > .container {
+  padding: 60px 15px 0;
 }
 
-.container {
-    display: inline-block;
-    cursor: pointer;
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
-.elements {
-    position: relative;
-    display: inline-block;
-    width: 104px;
-    height: 104px;
+code {
+  font-size: 80%;
 }
 
-.elements .tooltiptext {
-    visibility: hidden;
-    width: 300%;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    padding: 5px;
-    border-radius: 6px;
-  
-    /* Position the tooltip text */
-    position: absolute;
-    z-index: 1;
-    top: 105%;
-    left: 50%;
-    margin-left: -150%;
-  
-    /* Fade in tooltip */
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-/* Tooltip arrow */
-.elements .tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #555 transparent;
-  }
-  
-  /* Show the tooltip text when you mouse over the tooltip container */
-  .elements:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-
-#img0 {
-    background: url(https://upload.wikimedia.org/wikipedia/commons/c/c0/Periodic_Table_Of_Elements.svg) 56 78;
-}
-
-#forfail {
-    margin: 15px;
-}
-
-.centerdiv {
-    display: flex;
-    justify-content: center;
-}
-
-#inputfield {
-    margin-bottom: 10px;
-}
-
-#input {
-    width: 300px;
-    height: 30px;
-}
-
-.elemrowspacer {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-footer {
-    margin-top: auto;
-    padding-top: 20px;
-    padding-bottom: 8px;
-    width: 100%;
-}
-
-p.copyright {
-    width: 100%;
-    text-align: center;
-    margin: auto;
-    font-size: small;
+#elem1 {
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_table_large.svg);
+  background-position: -52px -74px;
+  width: 104px;
+  height: 104px;
+  background-size: 2000px;
 }

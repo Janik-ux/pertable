@@ -3,25 +3,72 @@
 
 <head>
     <title>Periodic Table Writer</title>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script type="text/javascript" src="script.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fi=no">
+
+    <meta name="description" content="A webpage to write words with Chemical Elements Symbols.">
+    <meta name="author" content="Janik-ux">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 
-<body>
-    <h1>Periodic Table Writer</h1>
-    <div class="centerdiv" id="inputfield">
-        <input id="input" onkeyup="makeelem()" type="text" placeholder="Your text?" />
+<body class="text-center">
+  <header class="mb-auto">
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Janik-ux</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+              <a class="nav-link" href="../">Home</a>
+            </li> 
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Periodic Table Writer<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../water-rocket">Water Rockets</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+  </header>
+
+  <main role="main" id="main" class="container">
+
+    <h1 class="mt-4 mb-5">Periodic Table Writer</h1>
+    <p class="text-primary mb-1">Put your text here, to convert it to chemical symbols:</p>
+    <p class="text-info font-weight-light">Tip: Hover over the elements!</p>
+    <div class="form-group">
+      <input type="text" class="form-control" id="main-input" onkeyup="makeelem()" placeholder="Berlin">
     </div>
-    <div id="forfail" class="centerdiv"></div>
+    <div id="forfail" class="text-warning"></div>
     <div id="peritable"></div>
-    <footer>
-        <p class="copyright">&copy 2023 by <a href="https://github.com/Janik-ux">Janik-ux</a>, licensed under <a href="https://opensource.org/licenses/MIT">MIT license</a>.</p>
-        <p class="copyright">Elements symbols by
-            <a href="https://commons.wikimedia.org/wiki/File:Periodic_table_large.svg">2012rc</a>, 
-            <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>, via Wikimedia Commons
-        </p>
-    </footer>
+  </main>
+
+  <footer class="footer mt-auto">
+    <div class="container">
+      <span class="text-muted">
+        &copy 2023 by <a href="https://github.com/Janik-ux">Janik-ux</a>, software licensed under <a href="https://opensource.org/licenses/MIT">MIT license</a>
+        <br>
+        Elements symbols by 
+          <a href="https://commons.wikimedia.org/wiki/File:Periodic_table_large.svg">2012rc</a>,
+          <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>, via Wikimedia Commons
+        <br>
+        Element informations by
+          <a href="https://github.com/Bowserinator/Periodic-Table-JSON/blob/master/periodic-table-lookup.json">Bowserinator</a>,
+          <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>, via github
+      </span>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="script.js"></script>
 </body>
 
 </html>
