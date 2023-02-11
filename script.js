@@ -26,7 +26,7 @@ $( document ).ready(function() {
     });
 
     // get elements and their coords on image
-    var elementsfetch = $.get(coord_url, function(data) {;
+    var elementsfetch = $.get(coord_url, function(data) {
         elements = data;
     });
 
@@ -34,9 +34,6 @@ $( document ).ready(function() {
     const urlParams = new URLSearchParams(window.location.search);
     var text = urlParams.has("s") ? urlParams.get("s") : "";
     $('#main-input').val(text);
-
-    // set up bootstrap's tooltip func
-    $('[data-toggle="tooltip"]').tooltip();
 
     $.when(elementsfetch, pertablefetch).done(function name(params) {
         // set up persymboldic to translate between full name and symbol
@@ -52,6 +49,7 @@ $( document ).ready(function() {
 });
 
 $(window).resize(function() {
+    // display new on screen change to possibly change size of elems
     makeelem();
 });
 
@@ -86,6 +84,11 @@ function longestlength(arr) {
     // return longest subarray of array
     const lengths = arr.map(a=>a.length);
     return Math.max(...lengths);
+}
+
+function cap_first(string) {
+    // capitalize first letter
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function generate_combis(text) {
@@ -189,7 +192,8 @@ function display_elems(combis) {
             if (specialsigns.includes(elems[i])) {
                 infotext = "A simple whitespace, nothing severe!";
             } else {
-                infotext = pertable[persymboldic[elems[i]]]["summary"]
+                infotext = pertable[persymboldic[elems[i]]]["summary"];
+                infotext += "<br><a href=" + pertable[persymboldic[elems[i]]]["source"] + ">Wikipedia</a>"
                 if (infotext == null) {
                     infotext = "Unfortunately no data present :(";
                 }
@@ -197,11 +201,12 @@ function display_elems(combis) {
                            
             // add all necessary attributes to the element
             var div = document.createElement("div");
-            div.setAttribute("class", "elements");
+            div.setAttribute("class", "js-element");
             div.setAttribute("id", "elem" + i);
             div.setAttribute("style", elemstyle);
-            div.setAttribute("data-toggle", "tooltip");
-            div.setAttribute("title", infotext)
+            div.setAttribute("title", cap_first(persymboldic[elems[i]]));
+            div.setAttribute("data-toggle", "popover");
+            div.setAttribute("data-content", infotext);
 
             row.appendChild(div);
             document.getElementById("peritable").appendChild(row);
@@ -209,10 +214,29 @@ function display_elems(combis) {
 
     }
 
-    var tip = document.createElement("p");
-    tip.setAttribute("class", "text-info");
-    tip.innerHTML = "Tip: Hover over the elements!";
-    document.getElementById("peritable").appendChild(tip);
+    // display tip only if there are symbols displayed
+    if (document.getElementById("peritable").hasChildNodes()) {
+        var tip = document.createElement("p");
+        tip.setAttribute("class", "text-info");
+        tip.innerHTML = "Tip: Click on an element!";
+        document.getElementById("peritable").appendChild(tip);
+    }
+
+    // add bootstrap popover to all elements
+    $(".js-element").popover({trigger: "click", placement: "auto", html: true});
+    
+    // make popovers disappear on click anywhere else
+    $('html').on('click', function(e) {
+        if (typeof $(e.target).data('original-title') == 'undefined' &&
+           !$(e.target).parents().is('.popover.in')) {
+          $('[data-original-title]').popover('hide');
+        }
+    });
+
+    // make other popovers disappear
+    $('.js-element').on('click', function (e) {
+        $('.js-element').not(this).popover('hide');
+    });
 }
 
 function rm_swaps(array) {
@@ -237,6 +261,7 @@ function makeelem() {
 
     if (writingin.length == 0) {
         removeAllChildNodes(document.getElementById("peritable"));
+        document.getElementById("forfail").innerHTML = "";
         return
     }
 
