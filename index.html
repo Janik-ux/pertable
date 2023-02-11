@@ -40,10 +40,23 @@
   </header>
 
   <main role="main" id="main" class="container">
-    <h1 class="mt-3 mb-4">Periodic Table Writer</h1>
+    <h1 id="main-heading" class="mt-3 mb-4">Periodic Table Writer</h1>
     <p class="mb-1">Put your text here, to convert it to chemical symbols:</p>
-    <div class="form-group">
-      <input type="text" class="form-control" id="main-input" onkeyup="makeelem()" placeholder="Berlin">
+    <div class="row">
+      <div class="input-group input-group-lg justify-content-center">
+          <div class="input-group-item input-group-prepend input-group-lg">
+            <input 
+              type="text" 
+              class="form-control" 
+              id="main-input" 
+              onkeyup="makeelem()" 
+              placeholder="Berlin" 
+              aria-label="inputtext">
+          </div>
+          <div class="input-group-item input-group-append">
+            <button type="button" onclick="share()" class=" btn btn-info"><i class="bi bi-share"></i></button>
+          </div>
+      </div>
     </div>
     <div id="forfail" class="text-warning"></div>
     <div class="mt-4" id="peritable"></div>

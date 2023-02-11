@@ -212,7 +212,7 @@ function display_elems(combis) {
                 }
                 elemtitle = cap_first(persymboldic[elems[i]]);
             }
-            
+
             // add all necessary attributes to the element
             var div = document.createElement("div");
             div.setAttribute("class", "js-element");
@@ -260,6 +260,31 @@ function display_elems(combis) {
     $('.js-element').on('click', function (e) {
         $('.js-element').not(this).popover('hide');
     });
+}
+
+function share() {
+    var link = window.location.href.split("?")[0] + "?s=" + $('#main-input').val();
+    if (navigator.share) {
+        navigator.share({
+          title: 'Periodic Table Writing',
+          url: link
+        }).then(() => {null})
+        .catch(console.error);
+      } else {
+        navigator.clipboard.writeText(link)
+            .then(() => {
+                var alert = `<div class="alert alert-primary alert-dismissible fade show" role="alert">
+                                Lick copied to clipboard!
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>`;
+                document.getElementById("main-heading").insertAdjacentHTML("afterend", alert);
+            }, 
+            () => {
+
+            });
+      }
 }
 
 function rm_swaps(array) {

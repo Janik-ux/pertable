@@ -28,11 +28,3 @@ body > .container {
 code {
   font-size: 80%;
 }
-
-#elem1 {
-  background-image: url(https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_table_large.svg);
-  background-position: -52px -74px;
-  width: 104px;
-  height: 104px;
-  background-size: 2000px;
-}
