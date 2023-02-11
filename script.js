@@ -160,24 +160,35 @@ function display_elems(combis) {
 
     removeAllChildNodes(document.getElementById("peritable"));
 
-    // set reasonable size for elems depending on screen size
-    // subtracting hardcoded value from widthis not the best way
-    // but works for now 
-    elemsize = ($("#main").width()-25)/longestlength(combis);
+    // set reasonable size for elems depending on screen size 
+    elemsize = ($("#main").width())/longestlength(combis);
     elemsize = elemsize < 150 ? elemsize : 150;
 
-    var firstrow = true;
+    var rownum = 0;
     for (const elems of combis) {
         // insert spacer before content if we are not in the first row
-        if (!firstrow) {
+        if (rownum > 0) {
             var or = document.createElement("div");
             or.setAttribute("class", "justify-content-center");
             or.innerHTML = "<p class=\"my-3\">OR</p>";
             document.getElementById("peritable").appendChild(or);
-        } else {firstrow = false;}
+        }
 
+        if (elems.length == 0) {
+            // nothing to show, skipping
+            continue
+        }
+
+        // create row for bootstrap style
         var row = document.createElement("div");
         row.setAttribute("class", "row justify-content-center mb-2");
+        document.getElementById("peritable").appendChild(row);
+
+        // create wrapper around elems to export to img
+        var wrap = document.createElement("div");
+        wrap.setAttribute("id", "elemrowwrap"+rownum);
+        wrap.setAttribute("class", "d-flex");
+        row.appendChild(wrap);
 
         for (var i = 0; i < elems.length; i++) {
             // prepare data for new elems
@@ -189,29 +200,41 @@ function display_elems(combis) {
             
             // set up its tooltip text
             var infotext = "";
+            var elemtitle = "";
             if (specialsigns.includes(elems[i])) {
                 infotext = "A simple whitespace, nothing severe!";
+                elemtitle = "The Mighty Whitespace";
             } else {
                 infotext = pertable[persymboldic[elems[i]]]["summary"];
                 infotext += "<br><a href=" + pertable[persymboldic[elems[i]]]["source"] + ">Wikipedia</a>"
                 if (infotext == null) {
                     infotext = "Unfortunately no data present :(";
                 }
+                elemtitle = cap_first(persymboldic[elems[i]]);
             }
-                           
+            
             // add all necessary attributes to the element
             var div = document.createElement("div");
             div.setAttribute("class", "js-element");
             div.setAttribute("id", "elem" + i);
             div.setAttribute("style", elemstyle);
-            div.setAttribute("title", cap_first(persymboldic[elems[i]]));
+            div.setAttribute("title", elemtitle);
             div.setAttribute("data-toggle", "popover");
             div.setAttribute("data-content", infotext);
 
-            row.appendChild(div);
-            document.getElementById("peritable").appendChild(row);
+            // append to dom
+            wrap.appendChild(div);
         }
 
+        if (wrap.hasChildNodes()) {
+            // add share and download buttons
+            var downl =    `<button class="btn btn-square m-1" onclick="export_img(${rownum})">
+                                    <i class="bi-download"></i>
+                            </button>`
+            row.insertAdjacentHTML("beforeend", downl)
+        }
+
+        rownum += 1;
     }
 
     // display tip only if there are symbols displayed
@@ -250,6 +273,15 @@ function rm_swaps(array) {
         }
     }
     return out;
+}
+
+function export_img(rownum) {
+    var node = document.getElementById("elemrowwrap"+rownum);
+    // export elems row to img
+    domtoimage.toBlob(node)
+        .then(function (blob) {
+            window.saveAs(blob, "pertablewriting.png");
+        });
 }
 
 function makeelem() {

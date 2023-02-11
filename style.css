@@ -16,15 +16,6 @@ body {
   /* background-color: #f5f5f5; */
 }
 
-.vertical-center {
-  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
-  min-height: 80vh; /* These two lines are counted as one :-)       */
-
-  display: flex;
-  align-items: center;
-}
-
-
 body > .container {
   padding: 60px 15px 0;
 }
