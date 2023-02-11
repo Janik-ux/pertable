@@ -174,7 +174,7 @@ function display_elems(combis) {
         } else {firstrow = false;}
 
         var row = document.createElement("div");
-        row.setAttribute("class", "row justify-content-center");
+        row.setAttribute("class", "row justify-content-center mb-2");
 
         for (var i = 0; i < elems.length; i++) {
             // prepare data for new elems
@@ -208,6 +208,11 @@ function display_elems(combis) {
         }
 
     }
+
+    var tip = document.createElement("p");
+    tip.setAttribute("class", "text-info");
+    tip.innerHTML = "Tip: Hover over the elements!";
+    document.getElementById("peritable").appendChild(tip);
 }
 
 function rm_swaps(array) {
@@ -230,14 +235,21 @@ function makeelem() {
     // get input string
     var writingin = document.getElementById("main-input").value.toLowerCase();
 
+    if (writingin.length == 0) {
+        removeAllChildNodes(document.getElementById("peritable"));
+        return
+    }
+
     // replace ä, ö etc, specified in specialchar
     writingin = replace_spec_char(writingin, specialchar);
 
     var combinations = generate_combis(writingin);
 
-    if (combinations.valid.length == 0 && writingin.length != 0) {
+    // catch if generate combis didn#t get a valid answer
+    if (combinations.valid.length == 0) {
+        // display error message if neccessary, maybe put in func
         forfail = document.getElementById("forfail");
-        forfail.innerHTML = "Generating failed... <br /> Try to write further maybe there will be a match! This is what left:";
+        forfail.innerHTML = "<p>Generating failed... <br> Try to write further maybe there will be a match! This is what left:</p>";
         var writingout = [[]]
         for (const combi of combinations.invalid) {
             if (combi.join("").length > writingout[0].join("").length) {
@@ -247,7 +259,6 @@ function makeelem() {
                 writingout.push(combi);
             }
         }
-
     } else {
         forfail = document.getElementById("forfail");
         forfail.innerHTML = "";
