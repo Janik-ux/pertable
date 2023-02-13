@@ -95,7 +95,8 @@ function generate_combis(text) {
     // looks for matching combinations of elements with the text
     // arg str text
 
-    // for every char find elements that contain the char
+    // for every char at a position find elements that begin with it
+    // e.g. "H": [H, HO, HE, ...]
     var possible_elems = new Array(text.length);
     for (let index = 0; index < text.length; index++) {
         // check if char(s) in elements and add to arr
@@ -130,7 +131,7 @@ function generate_combis(text) {
         else if (possible_elems[at_i].length == 0) {
             result["invalid"].push(chr_array);
         }
-        // got to next layer
+        // got to next layer (or next next because of elem has two letters)
         else {
             for (const elem of possible_elems[at_i]) {
                 recurse(at_i+elem.length, chr_array.concat(elem));
