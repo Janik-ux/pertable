@@ -35,7 +35,7 @@ $( document ).ready(function() {
     var text = urlParams.has("s") ? urlParams.get("s") : "";
     
     // "+" stands for whitespace
-    text = text.replace("+", " ");
+    text = text.replaceAll("+", " ");
     $('#main-input').val(text);
 
     $.when(elementsfetch, pertablefetch).done(function name(params) {
@@ -270,7 +270,7 @@ function share() {
     var link = window.location.href.split("?")[0] + "?s=" + $('#main-input').val();
     
     // substitute whitespace with "+" to make link valid, e.g. in Signal-msger
-    link = link.replace(" ", "+");
+    link = link.replaceAll(" ", "+");
     
     if (navigator.share) {
         navigator.share({
