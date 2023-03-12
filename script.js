@@ -309,12 +309,26 @@ function rm_swaps(array) {
 }
 
 function export_img(rownum) {
-    var node = document.getElementById("elemrowwrap"+rownum);
     // export elems row to img
-    domtoimage.toBlob(node)
-        .then(function (blob) {
-            window.saveAs(blob, "pertablewriting.png");
-        });
+    
+    var node = document.getElementById("elemrowwrap"+rownum);
+    
+    // set height of img to specific px number in my case 400px
+    var scale = 400 / node.offsetHeight;
+
+    domtoimage.toPng(node, {
+        height: node.offsetHeight * scale,
+        width: node.offsetWidth * scale,
+        style: {
+            transform: "scale(" + scale + ")",
+            transformOrigin: "top left",
+            width: node.offsetWidth + "px",
+            height: node.offsetHeight + "px"
+        }
+    })
+    .then(function (blob) {
+        window.saveAs(blob, "pertablewriting.png");
+    });
 }
 
 function makeelem() {
