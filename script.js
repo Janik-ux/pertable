@@ -1,4 +1,4 @@
-var debug = false; // print debug info
+var debug = true; // print debug info
 var oldtxt = "";
 const specialsigns = [" "]; //später vielleichtmal mit mehr Zeichen(@,!§$?()usw.)
 const specialchar = {
@@ -231,8 +231,8 @@ function display_elems(combis) {
         }
 
         if (wrap.hasChildNodes()) {
-            // add share and download buttons
-            var downl =    `<button class="btn btn-square m-1" onclick="export_img(${rownum})">
+            // add download button
+            var downl =    `<button class="btn btn-square m-1" onclick="export_img(${rownum})" title="Download Image">
                                     <i class="bi-download"></i>
                             </button>`
             row.insertAdjacentHTML("beforeend", downl)
