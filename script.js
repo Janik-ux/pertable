@@ -1,5 +1,5 @@
-var debug = true; // print debug info
-var oldtxt = "";
+var debug = false; // print debug info
+var shortfirst = true;
 const specialsigns = [" "]; //später vielleichtmal mit mehr Zeichen(@,!§$?()usw.)
 const specialchar = {
     "ü": "ue",
@@ -349,12 +349,16 @@ function makeelem() {
 
     var combinations = generate_combis(writingin);
 
-    // catch if generate combis didn#t get a valid answer
+   
+    // catch if generate combis didn't get a valid answer   
+    var forfail = document.getElementById("forfail");
+
     if (combinations.valid.length == 0) {
         // display error message if neccessary, maybe put in func
-        forfail = document.getElementById("forfail");
         forfail.innerHTML = "<p>Generating failed... <br> Try to write further maybe there will be a match! This is what left:</p>";
-        var writingout = [[]]
+        var writingout = [[]];
+
+        // find longest remaining combi(s) 
         for (const combi of combinations.invalid) {
             if (combi.join("").length > writingout[0].join("").length) {
                 writingout = [combi];
@@ -364,13 +368,15 @@ function makeelem() {
             }
         }
     } else {
-        forfail = document.getElementById("forfail");
         forfail.innerHTML = "";
         var writingout = combinations.valid;
+        if (shortfirst) {
+            writingout = writingout.reverse();
+        }
     }
 
     writingout = rm_swaps(writingout);
 
-    display_elems(writingout)
+    display_elems(writingout);
     
 }
